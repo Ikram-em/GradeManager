@@ -1,12 +1,18 @@
 package com.uniovi.sdi.grademanager.entities;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Mark {
 
+    @Id
+    @GeneratedValue
     private Long id;
+
     private String description;
     private Double score;
 
-    // Constructor vacío (necesario para Spring)
+    // Constructor vacío (OBLIGATORIO para JPA)
     public Mark() {
     }
 
@@ -17,6 +23,7 @@ public class Mark {
         this.score = score;
     }
 
+    // Getters y setters
     public Long getId() {
         return id;
     }
