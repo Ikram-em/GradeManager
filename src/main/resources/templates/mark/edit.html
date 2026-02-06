@@ -1,0 +1,67 @@
+
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<div class="container" id="main-container">
+    <h2>Editar nota</h2>
+
+    <form class="form-horizontal"
+          method="post"
+          th:action="${'/mark/edit/' + mark.id}">
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="description">
+                Descripción:
+            </label>
+            <div class="col-sm-10">
+                <input id="description"
+                       type="text"
+                       class="form-control"
+                       name="description"
+                       th:value="${mark.description}"
+                       placeholder="Ejemplo Ejercicio 1"
+                       required/>
+            </div>
+        </div>
+
+        <form method="post" action="/mark/edit">
+            <input type="hidden" name="id" th:value="${mark.id}" />
+
+            <input type="text" name="description" th:value="${mark.description}" />
+            <input type="number" name="score" th:value="${mark.score}" />
+
+            <button type="submit">Guardar</button>
+        </form>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="score">
+                Puntuación:
+            </label>
+            <div class="col-sm-10">
+                <input id="score"
+                       type="number"
+                       class="form-control"
+                       name="score"
+                       th:value="${mark.score}"
+                       placeholder="Entre 0 y 10"
+                       required/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">
+                    Modificar
+                </button>
+
+                <a th:href="${'/mark/details/' + mark.id}"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+            </div>
+        </div>
+
+    </form>
+</div>

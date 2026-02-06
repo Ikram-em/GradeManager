@@ -1,0 +1,69 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de notas</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container mt-4 text-center">
+
+    <!-- LOGO -->
+    <img src="/images/student-48.png" alt="logo"/>
+
+    <h1 class="mb-4">Listado de notas</h1>
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Descripción</th>
+            <th>Puntuación</th>
+            <th colspan="3">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="mark : ${markList}">
+            <td th:text="${mark.id}">1</td>
+            <td th:text="${mark.description}">Ejercicio 1</td>
+            <td th:text="${mark.score}">10</td>
+
+            <td>
+                <a class="btn btn-info btn-sm"
+                   th:href="${'/mark/details/' + mark.id}">
+                    detalles
+                </a>
+            </td>
+
+            <td>
+                <a class="btn btn-warning btn-sm"
+                   th:href="${'/mark/edit/' + mark.id}">
+                    modificar
+                </a>
+            </td>
+
+            <td>
+                <a class="btn btn-danger btn-sm"
+                   th:href="${'/mark/delete/' + mark.id}">
+                    eliminar
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(markList)}" class="alert alert-warning">
+        No hay notas registradas
+    </div>
+
+</div>
+
+</body>
+</html>
