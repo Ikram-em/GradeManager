@@ -1,67 +1,79 @@
-
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<div class="container" id="main-container">
-    <h2>Editar nota</h2>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Editar nota</title>
 
-    <form class="form-horizontal"
-          method="post"
-          th:action="${'/mark/edit/' + mark.id}">
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="description">
-                Descripción:
+    <!-- CSS propio -->
+    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
+</head>
+
+<body>
+
+<div class="container mt-4" id="main-container">
+
+    <!-- Logo y título -->
+    <div class="text-center mb-4">
+        <img src="/images/student-48.png" alt="logo"/>
+        <h2 class="mt-3">Editar nota</h2>
+    </div>
+
+    <!-- Formulario -->
+    <form method="post"
+          th:action="@{/mark/edit/{id}(id=${mark.id})}"
+          class="form-horizontal">
+
+        <!-- Descripción -->
+        <div class="mb-3">
+            <label for="description" class="form-label">
+                Descripción
             </label>
-            <div class="col-sm-10">
-                <input id="description"
-                       type="text"
-                       class="form-control"
-                       name="description"
-                       th:value="${mark.description}"
-                       placeholder="Ejemplo Ejercicio 1"
-                       required/>
-            </div>
+            <input type="text"
+                   id="description"
+                   name="description"
+                   class="form-control"
+                   th:value="${mark.description}"
+                   placeholder="Ejemplo Ejercicio 1"
+                   required/>
         </div>
 
-        <form method="post" action="/mark/edit">
-            <input type="hidden" name="id" th:value="${mark.id}" />
-
-            <input type="text" name="description" th:value="${mark.description}" />
-            <input type="number" name="score" th:value="${mark.score}" />
-
-            <button type="submit">Guardar</button>
-        </form>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="score">
-                Puntuación:
+        <!-- Puntuación -->
+        <div class="mb-3">
+            <label for="score" class="form-label">
+                Puntuación
             </label>
-            <div class="col-sm-10">
-                <input id="score"
-                       type="number"
-                       class="form-control"
-                       name="score"
-                       th:value="${mark.score}"
-                       placeholder="Entre 0 y 10"
-                       required/>
-            </div>
+            <input type="number"
+                   id="score"
+                   name="score"
+                   class="form-control"
+                   th:value="${mark.score}"
+                   min="0"
+                   max="10"
+                   required/>
         </div>
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary">
-                    Modificar
-                </button>
+        <!-- Botones -->
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                Guardar cambios
+            </button>
 
-                <a th:href="${'/mark/details/' + mark.id}"
-                   class="btn btn-secondary">
-                    Cancelar
-                </a>
-            </div>
+            <a th:href="@{/mark/details/{id}(id=${mark.id})}"
+               class="btn btn-secondary">
+                Cancelar
+            </a>
         </div>
 
     </form>
+
 </div>
+
+</body>
+</html>
