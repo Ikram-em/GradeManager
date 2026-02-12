@@ -8,7 +8,7 @@ public class Department {
     private String faculty;
     private int professors;
 
-    // Constructor vacío (necesario)
+    // Constructor vacío
     public Department() {
     }
 
@@ -21,47 +21,51 @@ public class Department {
         this.professors = professors;
     }
 
-    // Getters y Setters
+    // -------- GETTERS --------
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getFaculty() {
         return faculty;
     }
 
-    public void setFaculty(String faculty) {
-        this.faculty = faculty;
-    }
-
     public int getProfessors() {
         return professors;
+    }
+
+    // -------- SETTERS --------
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
     }
 
     public void setProfessors(int professors) {
         this.professors = professors;
     }
+
+    // -------- toString --------
 
     @Override
     public String toString() {

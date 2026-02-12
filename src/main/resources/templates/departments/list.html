@@ -1,0 +1,92 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Departamentos</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          crossorigin="anonymous">
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <img src="/images/student-48.png" alt="logo" class="mr-2"/>
+
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/departments">Ver Departamentos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/departments/add">Agregar Departamento</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4" id="main-container">
+    <h2>Departamentos</h2>
+    <p>Los departamentos actualmente registrados son los siguientes:</p>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Facultad</th>
+                <th>Profesores</th>
+                <th colspan="3">Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="department : ${departmentsList}">
+                <td th:text="${department.id}">1</td>
+                <td th:text="${department.code}">INF-01</td>
+                <td th:text="${department.name}">Departamento de Informática</td>
+                <td th:text="${department.faculty}">EII</td>
+                <td th:text="${department.professors}">120</td>
+
+                <td>
+                    <a th:href="@{/departments/details/{id}(id=${department.id})}">
+                        detalles
+                    </a>
+
+                </td>
+                <td>
+                    <a th:href="@{/departments/edit/{id}(id=${department.id})}">
+                        modificar
+                    </a>
+                </td>
+                <td>
+                    <a th:href="@{/departments/delete/{id}(id=${department.id})}">
+                        eliminar
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${#lists.isEmpty(departmentsList)}"
+         class="alert alert-warning">
+        No hay departamentos registrados
+    </div>
+
+</div>
+
+</body>
+</html>
