@@ -32,13 +32,14 @@
                 </div>
             </li>
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="professorDropdown" role="button"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{nav.professors}">
-                    Gestion de profesores
+            <li id="users-menu" class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropDown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Gestion de usuarios
                 </a>
-                <div class="dropdown-menu" aria-labelledby="professorDropdown">
-                    <a class="dropdown-item" th:href="@{/professor/list}" th:text="#{nav.professors.list}">Ver profesores</a>
+                <div class="dropdown-menu" aria-labelledby="userDropDown">
+                    <a class="dropdown-item" th:href="@{/user/add}">Agregar usuario</a>
+                    <a class="dropdown-item" th:href="@{/user/list}">Ver usuarios</a>
                 </div>
             </li>
         </ul>

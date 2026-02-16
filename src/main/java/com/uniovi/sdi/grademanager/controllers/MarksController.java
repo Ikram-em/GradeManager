@@ -2,7 +2,7 @@ package com.uniovi.sdi.grademanager.controllers;
 
 import com.uniovi.sdi.grademanager.entities.Mark;
 import com.uniovi.sdi.grademanager.services.MarksService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.uniovi.sdi.grademanager.services.UsersService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,8 +10,13 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class MarksController {
 
-    @Autowired
-    private MarksService marksService;
+    private final MarksService marksService;
+    private final UsersService usersService;
+
+    public MarksController(MarksService marksService, UsersService usersService) {
+        this.marksService = marksService;
+        this.usersService = usersService;
+    }
 
     @GetMapping("/mark/list")
     public String getList(Model model) {
@@ -32,7 +37,8 @@ public class MarksController {
     }
 
     @PostMapping("/mark/add")
-    public String addMark(@ModelAttribute Mark mark) {
+    public String addMark(@ModelAttribute Mark mark, @RequestParam("user") Long userId) {
+        mark.setUser(usersService.getUser(userId));
         marksService.addMark(mark);
         return "redirect:/mark/list";
     }
@@ -40,6 +46,7 @@ public class MarksController {
     @GetMapping("/mark/add")
     public String getAddForm(Model model) {
         model.addAttribute("mark", new Mark());
+        model.addAttribute("usersList", usersService.getUsers());
         return "mark/add";
     }
 
@@ -53,23 +60,21 @@ public class MarksController {
     @GetMapping("/mark/edit/{id}")
     public String getEdit(Model model, @PathVariable Long id) {
         model.addAttribute("mark", marksService.getMark(id));
+        model.addAttribute("usersList", usersService.getUsers());
         return "mark/edit";
     }
 
 
     @PostMapping("/mark/edit/{id}")
     public String setEdit(@ModelAttribute Mark mark, @PathVariable Long id) {
-        mark.setId(id);
-        marksService.addMark(mark);
+        Mark originalMark = marksService.getMark(id);
+        if (originalMark == null) {
+            return "redirect:/mark/list";
+        }
+        originalMark.setScore(mark.getScore());
+        originalMark.setDescription(mark.getDescription());
+        marksService.addMark(originalMark);
         return "redirect:/mark/details/" + id;
     }
-
-    @PostMapping("/mark/edit")
-    public String editMark(@ModelAttribute Mark mark) {
-        marksService.addMark(mark);
-        return "redirect:/mark/details/" + mark.getId();
-    }
-
-
 
 }

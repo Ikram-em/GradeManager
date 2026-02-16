@@ -51,6 +51,19 @@
              required/>
     </div>
 
+    <div class="mb-3">
+      <label for="user" class="form-label">Alumno</label>
+      <div th:if="${usersList != null and not #lists.isEmpty(usersList)}">
+        <select id="user" class="form-control" name="user" required>
+          <option th:each="user : ${usersList}"
+                  th:value="${user.id}"
+                  th:text="${user.dni + ' - ' + user.name + ' ' + user.lastName}">
+            Usuario
+          </option>
+        </select>
+      </div>
+    </div>
+
     <div class="d-flex gap-2">
       <button type="submit" class="btn btn-primary">
         Guardar

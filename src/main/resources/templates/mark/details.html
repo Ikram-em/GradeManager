@@ -51,6 +51,18 @@
         </div>
     </div>
 
+    <div class="card mb-4">
+        <div class="card-header fw-bold">
+            Usuario
+        </div>
+        <div class="card-body">
+            <p class="card-text"
+               th:text="${mark.user != null ? mark.user.fullName + ' (' + mark.user.dni + ')' : 'Sin usuario'}">
+                Usuario
+            </p>
+        </div>
+    </div>
+
     <!-- Botones -->
     <div class="d-flex gap-2">
         <a th:href="@{/mark/edit/{id}(id=${mark.id})}"

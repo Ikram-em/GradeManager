@@ -2,7 +2,7 @@ package com.uniovi.sdi.grademanager.services;
 
 import com.uniovi.sdi.grademanager.entities.Mark;
 import com.uniovi.sdi.grademanager.repositories.MarksRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.uniovi.sdi.grademanager.repositories.UsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,8 +11,13 @@ import java.util.List;
 @Service
 public class MarksService {
 
-    @Autowired
-    private MarksRepository marksRepository;
+    private final MarksRepository marksRepository;
+    private final UsersRepository usersRepository;
+
+    public MarksService(MarksRepository marksRepository, UsersRepository usersRepository) {
+        this.marksRepository = marksRepository;
+        this.usersRepository = usersRepository;
+    }
 
     public List<Mark> getMarks() {
         List<Mark> marks = new ArrayList<>();
@@ -25,6 +30,9 @@ public class MarksService {
     }
 
     public void addMark(Mark mark) {
+        if (mark.getUser() != null && mark.getUser().getId() != null) {
+            usersRepository.findById(mark.getUser().getId()).ifPresent(mark::setUser);
+        }
         marksRepository.save(mark);
     }
 

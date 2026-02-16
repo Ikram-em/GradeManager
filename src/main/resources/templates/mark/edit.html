@@ -59,6 +59,15 @@
                    required/>
         </div>
 
+        <div class="mb-3">
+            <label for="user" class="form-label">Usuario asociado</label>
+            <input type="text"
+                   id="user"
+                   class="form-control"
+                   th:value="${mark.user != null ? mark.user.fullName + ' (' + mark.user.dni + ')' : ''}"
+                   readonly/>
+        </div>
+
         <!-- Botones -->
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">
