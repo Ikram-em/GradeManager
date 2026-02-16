@@ -15,8 +15,14 @@ public class MarksController {
 
     @GetMapping("/mark/list")
     public String getList(Model model) {
-        model.addAttribute("markList", marksService.getMarks());
+        model.addAttribute("marksList", marksService.getMarks());
         return "mark/list";
+    }
+
+    @GetMapping("/mark/list/update")
+    public String updateList(Model model) {
+        model.addAttribute("marksList", marksService.getMarks());
+        return "mark/list :: marksTable";
     }
 
     @GetMapping("/mark/details/{id}")
@@ -67,4 +73,3 @@ public class MarksController {
 
 
 }
-
