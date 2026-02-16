@@ -5,47 +5,80 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary"
-     th:fragment="nav">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" th:fragment="nav">
+    <a class="navbar-brand" th:href="@{/}">
+        <img src="/images/student-48.png" alt="logo"/>
+    </a>
 
-  <a class="navbar-brand" href="/">
-    <img src="/images/student-48.png" alt="logo"/>
-  </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar"
+            aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse"
-          data-target="#myNavbar">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/}" th:text="#{nav.home}">Home</a>
+            </li>
 
-  <div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/">Home</a>
-      </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="marksDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false" th:text="#{nav.marks}">
+                    Gestion de notas
+                </a>
+                <div class="dropdown-menu" aria-labelledby="marksDropdown">
+                    <a class="dropdown-item" th:href="@{/mark/list}" th:text="#{nav.marks.list}">Ver notas</a>
+                    <a class="dropdown-item" th:href="@{/mark/add}" th:text="#{nav.marks.add}">Agregar nota</a>
+                </div>
+            </li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
-          Gestión de notas
-        </a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="/mark/list">Ver notas</a>
-          <a class="dropdown-item" href="/mark/add">Agregar nota</a>
-        </div>
-      </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="professorDropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{nav.professors}">
+                    Gestion de profesores
+                </a>
+                <div class="dropdown-menu" aria-labelledby="professorDropdown">
+                    <a class="dropdown-item" th:href="@{/professor/list}" th:text="#{nav.professors.list}">Ver profesores</a>
+                </div>
+            </li>
+        </ul>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
-          Gestión de profesores
-        </a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="/professor/list">Ver profesores</a>
-        </div>
-      </li>
-    </ul>
-  </div>
+        <ul class="navbar-nav justify-content-end">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="btnLanguage" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <span th:text="#{language.change}">Idioma</span>
+                </a>
+                <div id="languageDropdownMenuButton" class="dropdown-menu dropdown-menu-right"
+                     aria-labelledby="btnLanguage">
+                    <a class="dropdown-item" id="btnEnglish" href="#" value="en">
+                        <img th:src="@{/images/if_uk_flag.png}" alt="EN"
+                             style="border: 0; float: left; margin-right: 15px"/>
+                        <span th:text="#{language.en}">Ingles</span>
+                    </a>
+                    <a class="dropdown-item" id="btnSpanish" href="#" value="es">
+                        <img th:src="@{/images/if_spain_flag.png}" alt="ES"
+                             style="border: 0; float: left; margin-right: 15px"/>
+                        <span th:text="#{language.es}">Espanol</span>
+                    </a>
+                </div>
+            </li>
 
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/signup}">
+                    <i class='fas fa-user-alt' style='font-size:16px'></i>
+                    <span th:text="#{signup.message}">Registrate</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/login}">
+                    <i class='fas fa-sign-in-alt' style='font-size:16px'></i>
+                    <span th:text="#{login.message}">Identificate</span>
+                </a>
+            </li>
+        </ul>
+    </div>
 </nav>
 
 </body>
 </html>
-ml>

@@ -2,17 +2,13 @@
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Página de inicio</title>
-</head>
+<head th:replace="fragments/head :: head"></head>
 <body>
 
 <nav th:replace="fragments/nav :: nav"></nav>
-<head th:replace="fragments/head :: head"></head>
 <footer th:replace="fragments/footer :: footer"></footer>
 <div class="container">
-    <h2>Bienvenidos a la página principal</h2>
+    <h2 th:text="#{welcome.message}">Bienvenidos a la pagina principal</h2>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing</p>
 </div>
 </body>
