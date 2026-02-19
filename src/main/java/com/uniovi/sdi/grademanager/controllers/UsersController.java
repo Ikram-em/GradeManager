@@ -3,6 +3,7 @@ package com.uniovi.sdi.grademanager.controllers;
 import com.uniovi.sdi.grademanager.entities.User;
 import com.uniovi.sdi.grademanager.services.SecurityService;
 import com.uniovi.sdi.grademanager.services.UsersService;
+import com.uniovi.sdi.grademanager.validators.UserEditFormValidator;
 import com.uniovi.sdi.grademanager.validators.SignUpFormValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,20 +24,29 @@ public class UsersController {
     private final UsersService usersService;
     private final SecurityService securityService;
     private final SignUpFormValidator signUpFormValidator;
+    private final UserEditFormValidator userEditFormValidator;
 
     public UsersController(
             UsersService usersService,
             SecurityService securityService,
-            SignUpFormValidator signUpFormValidator) {
+            SignUpFormValidator signUpFormValidator,
+            UserEditFormValidator userEditFormValidator) {
         this.usersService = usersService;
         this.securityService = securityService;
         this.signUpFormValidator = signUpFormValidator;
+        this.userEditFormValidator = userEditFormValidator;
     }
 
     @GetMapping("/user/list")
     public String getListado(Model model) {
         model.addAttribute("usersList", usersService.getUsers());
         return "user/list";
+    }
+
+    @GetMapping("/user/list/update")
+    public String updateList(Model model) {
+        model.addAttribute("usersList", usersService.getUsers());
+        return "user/fragments/usersTable :: usersTable";
     }
 
     @GetMapping("/user/add")
@@ -109,14 +119,27 @@ public class UsersController {
     @GetMapping("/user/edit/{id}")
     public String getEdit(Model model, @PathVariable Long id) {
         User user = usersService.getUser(id);
+        if (user == null) {
+            return "redirect:/user/list";
+        }
         model.addAttribute("user", user);
         return "user/edit";
     }
 
     @PostMapping("/user/edit/{id}")
-    public String setEdit(@PathVariable Long id, @ModelAttribute User user) {
+    public String setEdit(@PathVariable Long id, @Validated @ModelAttribute("user") User user, BindingResult result) {
+        User currentUser = usersService.getUser(id);
+        if (currentUser == null) {
+            return "redirect:/user/list";
+        }
+
         user.setId(id);
-        usersService.addUser(user);
+        userEditFormValidator.validate(user, result);
+        if (result.hasErrors()) {
+            return "user/edit";
+        }
+
+        usersService.updateUserProfile(id, user.getDni(), user.getName(), user.getLastName());
         return "redirect:/user/details/" + id;
     }
 }

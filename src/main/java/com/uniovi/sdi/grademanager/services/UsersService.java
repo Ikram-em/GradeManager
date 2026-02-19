@@ -53,4 +53,15 @@ public class UsersService {
     public void deleteUser(Long id) {
         usersRepository.deleteById(id);
     }
+
+    public void updateUserProfile(Long id, String dni, String name, String lastName) {
+        User currentUser = usersRepository.findById(id).orElse(null);
+        if (currentUser == null) {
+            return;
+        }
+        currentUser.setDni(dni);
+        currentUser.setName(name);
+        currentUser.setLastName(lastName);
+        usersRepository.save(currentUser);
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
@@ -32,6 +33,7 @@ class UserManagementFunctionalTest {
     private UsersRepository usersRepository;
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void shouldListUsers() throws Exception {
         mockMvc.perform(get("/user/list"))
                 .andExpect(status().isOk())
@@ -41,6 +43,7 @@ class UserManagementFunctionalTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void shouldAddAndDeleteUser() throws Exception {
         long before = usersRepository.count();
         String uniqueSuffix = UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
@@ -68,5 +71,27 @@ class UserManagementFunctionalTest {
         assertThat(usersRepository.count()).isEqualTo(before);
         assertThat(StreamSupport.stream(usersRepository.findAll().spliterator(), false)
                 .noneMatch(user -> dni.equals(user.getDni()))).isTrue();
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void shouldEditUserWithoutChangingPassword() throws Exception {
+        User existingUser = StreamSupport.stream(usersRepository.findAll().spliterator(), false)
+                .findFirst()
+                .orElseThrow();
+        String oldPassword = existingUser.getPassword();
+
+        mockMvc.perform(post("/user/edit/{id}", existingUser.getId())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("dni", existingUser.getDni())
+                        .param("name", "NombreEditado")
+                        .param("lastName", "ApellidoEditado"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/details/" + existingUser.getId()));
+
+        User editedUser = usersRepository.findById(existingUser.getId()).orElseThrow();
+        assertThat(editedUser.getName()).isEqualTo("NombreEditado");
+        assertThat(editedUser.getLastName()).isEqualTo("ApellidoEditado");
+        assertThat(editedUser.getPassword()).isEqualTo(oldPassword);
     }
 }

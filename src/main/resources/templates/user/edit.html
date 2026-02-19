@@ -5,22 +5,21 @@
 <nav th:replace="fragments/nav :: nav"></nav>
 <div class="container mt-4">
     <h2>Editar usuario</h2>
-    <form method="post" th:action="@{/user/edit/{id}(id=${user.id})}">
+    <form method="post" th:action="@{/user/edit/{id}(id=${user.id})}" th:object="${user}">
         <div class="mb-3">
             <label for="dni" class="form-label">DNI</label>
-            <input id="dni" name="dni" class="form-control" th:value="${user.dni}" required/>
+            <input id="dni" th:field="*{dni}" class="form-control" required/>
+            <span class="text-danger" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></span>
         </div>
         <div class="mb-3">
             <label for="name" class="form-label">Nombre</label>
-            <input id="name" name="name" class="form-control" th:value="${user.name}" required/>
+            <input id="name" th:field="*{name}" class="form-control" required/>
+            <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
         </div>
         <div class="mb-3">
             <label for="lastName" class="form-label">Apellidos</label>
-            <input id="lastName" name="lastName" class="form-control" th:value="${user.lastName}" required/>
-        </div>
-        <div class="mb-3">
-            <label for="role" class="form-label">Rol</label>
-            <input id="role" name="role" class="form-control" th:value="${user.role}"/>
+            <input id="lastName" th:field="*{lastName}" class="form-control" required/>
+            <span class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
         </div>
         <button class="btn btn-primary" type="submit">Guardar</button>
         <a th:href="@{/user/details/{id}(id=${user.id})}" class="btn btn-secondary">Cancelar</a>

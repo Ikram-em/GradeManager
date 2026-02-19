@@ -6,7 +6,8 @@
 <div class="container mt-4">
     <h2>Detalle de usuario</h2>
     <p><strong>DNI:</strong> <span th:text="${user.dni}">99999990A</span></p>
-    <p><strong>Nombre:</strong> <span th:text="${user.fullName}">Pedro Diaz</span></p>
+    <p><strong>Nombre:</strong> <span th:text="${user.name}">Pedro</span></p>
+    <p><strong>Apellidos:</strong> <span th:text="${user.lastName}">Diaz</span></p>
     <p><strong>Rol:</strong> <span th:text="${user.role}">student</span></p>
     <a th:href="@{/user/edit/{id}(id=${user.id})}" class="btn btn-warning">Editar</a>
     <a th:href="@{/user/list}" class="btn btn-secondary">Volver</a>
