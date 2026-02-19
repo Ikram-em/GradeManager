@@ -5,6 +5,8 @@ import com.uniovi.sdi.grademanager.entities.User;
 import com.uniovi.sdi.grademanager.services.MarksService;
 import com.uniovi.sdi.grademanager.services.UsersService;
 import com.uniovi.sdi.grademanager.validators.MarkAddFormValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,24 +34,38 @@ public class MarksController {
     @GetMapping("/mark/list")
     public String getList(
             Model model,
+            Pageable pageable,
             Principal principal,
             @RequestParam(value = "searchText", required = false) String searchText) {
         String dni = principal.getName();
         User user = usersService.getUserByDni(dni);
+        Page<Mark> marks;
         if (searchText != null && !searchText.isBlank()) {
-            model.addAttribute("marksList", marksService.searchMarksByDescriptionAndNameForUser(searchText, user));
+            marks = marksService.searchMarksByDescriptionAndNameForUser(pageable, searchText, user);
         } else {
-            model.addAttribute("marksList", marksService.getMarksForUser(user));
+            marks = marksService.getMarksForUser(pageable, user);
         }
+        model.addAttribute("marksList", marks.getContent());
+        model.addAttribute("page", marks);
         model.addAttribute("searchText", searchText);
         return "mark/list";
     }
 
     @GetMapping("/mark/list/update")
-    public String updateList(Model model, Principal principal) {
+    public String updateList(
+            Model model,
+            Pageable pageable,
+            Principal principal,
+            @RequestParam(value = "searchText", required = false) String searchText) {
         String dni = principal.getName();
         User user = usersService.getUserByDni(dni);
-        model.addAttribute("marksList", marksService.getMarksForUser(user));
+        Page<Mark> marks;
+        if (searchText != null && !searchText.isBlank()) {
+            marks = marksService.searchMarksByDescriptionAndNameForUser(pageable, searchText, user);
+        } else {
+            marks = marksService.getMarksForUser(pageable, user);
+        }
+        model.addAttribute("marksList", marks.getContent());
         return "mark/list :: marksTable";
     }
 

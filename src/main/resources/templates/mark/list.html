@@ -25,7 +25,7 @@
 
 <body>
 
-<nav th:replace="fragments/nav :: nav"></nav>
+<nav th:replace="~{fragments/nav :: nav}"></nav>
 
 <div class="container mt-4" id="main-container">
     <h2>Notas</h2>
@@ -35,6 +35,8 @@
                    th:value="${searchText}"
                    placeholder="Buscar por descripcion o nombre del alumno">
         </div>
+        <input type="hidden" name="size"
+               th:value="${param.size != null and !#lists.isEmpty(param.size) ? param.size[0] : null}"/>
         <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
     <p>Las notas que actualmente figuran en el sistema son las siguientes:</p>
@@ -92,26 +94,52 @@
         No marks
     </div>
 
+    <footer th:replace="~{fragments/pagination :: pagination}"></footer>
 </div>
 
-<script>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function buildUpdateUrl() {
+        let page = /*[[${param.page != null and !#lists.isEmpty(param.page) ? param.page[0] : null}]]*/ null;
+        let size = /*[[${param.size != null and !#lists.isEmpty(param.size) ? param.size[0] : null}]]*/ null;
+        let searchText = /*[[${searchText}]]*/ null;
+        let urlUpdate = '/mark/list/update';
+        let params = [];
+        if (page != null) {
+            params.push('page=' + encodeURIComponent(page));
+        }
+        if (size != null) {
+            params.push('size=' + encodeURIComponent(size));
+        }
+        if (searchText != null && searchText !== '') {
+            params.push('searchText=' + encodeURIComponent(searchText));
+        }
+        if (params.length > 0) {
+            urlUpdate += '?' + params.join('&');
+        }
+        return urlUpdate;
+    }
+
     $("#updateButton").click(function () {
-        $("#marksTableContainer").load("/mark/list/update #marksTable");
+        $("#marksTableContainer").load(buildUpdateUrl() + " #marksTable");
     });
 
     $(document).on("click", ".js-resend", function () {
         var markId = $(this).data("mark-id");
         $.get("/mark/" + markId + "/resend", function () {
-            $("#marksTableContainer").load("/mark/list/update #marksTable");
+            $("#marksTableContainer").load(buildUpdateUrl() + " #marksTable");
         });
     });
 
     $(document).on("click", ".js-noresend", function () {
         var markId = $(this).data("mark-id");
         $.get("/mark/" + markId + "/noresend", function () {
-            $("#marksTableContainer").load("/mark/list/update #marksTable");
+            $("#marksTableContainer").load(buildUpdateUrl() + " #marksTable");
         });
     });
+    /*]]>*/
 </script>
 
 </body>

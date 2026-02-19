@@ -2,6 +2,9 @@ package com.uniovi.sdi.grademanager.services;
 
 import com.uniovi.sdi.grademanager.entities.Mark;
 import com.uniovi.sdi.grademanager.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import com.uniovi.sdi.grademanager.repositories.MarksRepository;
 import com.uniovi.sdi.grademanager.repositories.UsersRepository;
 import org.springframework.security.core.Authentication;
@@ -9,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -47,31 +51,35 @@ public class MarksService {
         return marksRepository.findAllByUserDni(dni);
     }
 
-    public List<Mark> getMarksForUser(User user) {
-        if (user == null || user.getRole() == null) {
-            return new ArrayList<>();
-        }
-        if (user.getRole().equals("ROLE_STUDENT")) {
-            return marksRepository.findAllByUser(user);
-        }
-        if (user.getRole().equals("ROLE_PROFESSOR") || user.getRole().equals("ROLE_ADMIN")) {
-            return getMarks();
-        }
-        return new ArrayList<>();
+    public Page<Mark> getMarks(Pageable pageable) {
+        return marksRepository.findAll(pageable);
     }
 
-    public List<Mark> searchMarksByDescriptionAndNameForUser(String searchText, User user) {
+    public Page<Mark> getMarksForUser(Pageable pageable, User user) {
+        if (user == null || user.getRole() == null) {
+            return new PageImpl<>(new LinkedList<>(), pageable, 0);
+        }
+        if (user.getRole().equals("ROLE_STUDENT")) {
+            return marksRepository.findAllByUser(pageable, user);
+        }
+        if (user.getRole().equals("ROLE_PROFESSOR") || user.getRole().equals("ROLE_ADMIN")) {
+            return getMarks(pageable);
+        }
+        return new PageImpl<>(new LinkedList<>(), pageable, 0);
+    }
+
+    public Page<Mark> searchMarksByDescriptionAndNameForUser(Pageable pageable, String searchText, User user) {
         if (user == null || user.getRole() == null || searchText == null) {
-            return new ArrayList<>();
+            return new PageImpl<>(new LinkedList<>(), pageable, 0);
         }
         String text = "%" + searchText + "%";
         if (user.getRole().equals("ROLE_STUDENT")) {
-            return marksRepository.searchByDescriptionNameAndUser(text, user);
+            return marksRepository.searchByDescriptionNameAndUser(pageable, text, user);
         }
         if (user.getRole().equals("ROLE_PROFESSOR") || user.getRole().equals("ROLE_ADMIN")) {
-            return marksRepository.searchByDescriptionAndName(text);
+            return marksRepository.searchByDescriptionAndName(pageable, text);
         }
-        return new ArrayList<>();
+        return new PageImpl<>(new LinkedList<>(), pageable, 0);
     }
 
     public void setMarkResend(boolean revised, Long id) {
