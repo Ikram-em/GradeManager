@@ -12,9 +12,11 @@ import java.util.Set;
 public class InsertDataSampleService {
 
     private final UsersService usersService;
+    private final RolesService rolesService;
 
-    public InsertDataSampleService(UsersService usersService) {
+    public InsertDataSampleService(UsersService usersService, RolesService rolesService) {
         this.usersService = usersService;
+        this.rolesService = rolesService;
     }
 
     @PostConstruct
@@ -31,6 +33,12 @@ public class InsertDataSampleService {
         user4.setPassword("123456");
         user5.setPassword("123456");
         user6.setPassword("123456");
+        user1.setRole(rolesService.getRoles()[0]);
+        user2.setRole(rolesService.getRoles()[0]);
+        user3.setRole(rolesService.getRoles()[0]);
+        user4.setRole(rolesService.getRoles()[1]);
+        user5.setRole(rolesService.getRoles()[1]);
+        user6.setRole(rolesService.getRoles()[2]);
 
         Set<Mark> user1Marks = new HashSet<>() {{
             add(new Mark("Nota A1", 10.0, user1));

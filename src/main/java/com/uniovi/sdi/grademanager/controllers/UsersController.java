@@ -1,6 +1,7 @@
 package com.uniovi.sdi.grademanager.controllers;
 
 import com.uniovi.sdi.grademanager.entities.User;
+import com.uniovi.sdi.grademanager.services.RolesService;
 import com.uniovi.sdi.grademanager.services.SecurityService;
 import com.uniovi.sdi.grademanager.services.UsersService;
 import com.uniovi.sdi.grademanager.validators.UserEditFormValidator;
@@ -23,6 +24,7 @@ public class UsersController {
 
     private final UsersService usersService;
     private final SecurityService securityService;
+    private final RolesService rolesService;
     private final SignUpFormValidator signUpFormValidator;
     private final UserEditFormValidator userEditFormValidator;
 
@@ -30,11 +32,13 @@ public class UsersController {
             UsersService usersService,
             SecurityService securityService,
             SignUpFormValidator signUpFormValidator,
-            UserEditFormValidator userEditFormValidator) {
+            UserEditFormValidator userEditFormValidator,
+            RolesService rolesService) {
         this.usersService = usersService;
         this.securityService = securityService;
         this.signUpFormValidator = signUpFormValidator;
         this.userEditFormValidator = userEditFormValidator;
+        this.rolesService = rolesService;
     }
 
     @GetMapping("/user/list")
@@ -51,6 +55,7 @@ public class UsersController {
 
     @GetMapping("/user/add")
     public String getUser(Model model) {
+        model.addAttribute("rolesList", rolesService.getRoles());
         model.addAttribute("user", new User());
         model.addAttribute("usersList", usersService.getUsers());
         return "user/add";
@@ -74,6 +79,7 @@ public class UsersController {
         if (result.hasErrors()) {
             return "signup";
         }
+        user.setRole(rolesService.getRoles()[0]);
         usersService.addUser(user);
         securityService.autoLogin(user.getDni(), user.getPasswordConfirm());
         return "redirect:home";
