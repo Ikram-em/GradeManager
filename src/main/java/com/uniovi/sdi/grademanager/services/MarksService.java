@@ -60,6 +60,20 @@ public class MarksService {
         return new ArrayList<>();
     }
 
+    public List<Mark> searchMarksByDescriptionAndNameForUser(String searchText, User user) {
+        if (user == null || user.getRole() == null || searchText == null) {
+            return new ArrayList<>();
+        }
+        String text = "%" + searchText + "%";
+        if (user.getRole().equals("ROLE_STUDENT")) {
+            return marksRepository.searchByDescriptionNameAndUser(text, user);
+        }
+        if (user.getRole().equals("ROLE_PROFESSOR") || user.getRole().equals("ROLE_ADMIN")) {
+            return marksRepository.searchByDescriptionAndName(text);
+        }
+        return new ArrayList<>();
+    }
+
     public void setMarkResend(boolean revised, Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String dni = auth != null ? auth.getName() : null;

@@ -29,6 +29,14 @@
 
 <div class="container mt-4" id="main-container">
     <h2>Notas</h2>
+    <form class="form-inline mb-3" action="/mark/list" method="get">
+        <div class="form-group mr-2">
+            <input name="searchText" type="text" class="form-control" size="50"
+                   th:value="${searchText}"
+                   placeholder="Buscar por descripcion o nombre del alumno">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
     <p>Las notas que actualmente figuran en el sistema son las siguientes:</p>
     <button id="updateButton" type="button" class="btn btn-primary mb-3">Actualizar</button>
 
