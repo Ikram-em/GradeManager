@@ -29,18 +29,25 @@ public class MarksController {
     @GetMapping("/mark/list")
     public String getList(Model model) {
         model.addAttribute("marksList", marksService.getMarks());
+        model.addAttribute("consultedList", marksService.getConsultedMarks());
         return "mark/list";
     }
 
     @GetMapping("/mark/list/update")
     public String updateList(Model model) {
         model.addAttribute("marksList", marksService.getMarks());
+        model.addAttribute("consultedList", marksService.getConsultedMarks());
         return "mark/list :: marksTable";
     }
 
     @GetMapping("/mark/details/{id}")
     public String getDetail(@PathVariable Long id, Model model) {
-        model.addAttribute("mark", marksService.getMark(id));
+        Mark mark = marksService.getMark(id);
+        if (mark == null) {
+            return "redirect:/mark/list";
+        }
+        model.addAttribute("mark", mark);
+        model.addAttribute("consultedList", marksService.getConsultedMarks());
         return "mark/details"; // más adelante
     }
 
@@ -95,5 +102,4 @@ public class MarksController {
         marksService.addMark(originalMark);
         return "redirect:/mark/details/" + id;
     }
-
 }

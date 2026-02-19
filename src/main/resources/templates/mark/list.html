@@ -41,6 +41,32 @@
 
 <div class="container mt-4" id="main-container">
     <h2>Notas</h2>
+    <p>Notas consultadas recientemente por el usuario:</p>
+    <div class="table-responsive">
+        <table class="table table-hover" th:fragment="tableMarks" id="consultedTableMarks">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Puntuación</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="mark : ${consultedList}">
+                <td th:text="${mark.id}">1</td>
+                <td th:text="${mark.description}">Ejercicio 1</td>
+                <td th:text="${mark.score}">10</td>
+                <td><a th:href="${'/mark/details/' + mark.id}">detalles</a></td>
+                <td><a th:href="${'/mark/edit/' + mark.id}">modificar</a></td>
+                <td><a th:href="${'/mark/delete/' + mark.id}">eliminar</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
     <p>Las notas que actualmente figuran en el sistema son las siguientes:</p>
     <button id="updateButton" type="button" class="btn btn-primary mb-3">Actualizar</button>
 
@@ -73,6 +99,7 @@
     <div th:if="${#lists.isEmpty(marksList)}" class="alert alert-warning">
         No marks
     </div>
+
 </div>
 
 <script>

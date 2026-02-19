@@ -63,6 +63,26 @@
         </div>
     </div>
 
+    <div class="card mb-4" th:if="${not #sets.isEmpty(consultedList)}">
+        <div class="card-header fw-bold">
+            Ultimas notas consultadas en esta sesion
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+                th:each="recentMark : ${consultedList}"
+                th:if="${recentMark.id != mark.id}">
+                <span>
+                    <strong th:text="${recentMark.description}">Ejercicio 1</strong>
+                    -
+                    <span th:text="${recentMark.score}">10</span>
+                </span>
+                <a th:href="@{/mark/details/{id}(id=${recentMark.id})}" class="btn btn-sm btn-outline-primary">
+                    Ver
+                </a>
+            </li>
+        </ul>
+    </div>
+
     <!-- Botones -->
     <div class="d-flex gap-2">
         <a th:href="@{/mark/edit/{id}(id=${mark.id})}"
