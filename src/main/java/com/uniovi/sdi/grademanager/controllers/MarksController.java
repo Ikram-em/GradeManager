@@ -3,8 +3,11 @@ package com.uniovi.sdi.grademanager.controllers;
 import com.uniovi.sdi.grademanager.entities.Mark;
 import com.uniovi.sdi.grademanager.services.MarksService;
 import com.uniovi.sdi.grademanager.services.UsersService;
+import com.uniovi.sdi.grademanager.validators.MarkAddFormValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -12,10 +15,15 @@ public class MarksController {
 
     private final MarksService marksService;
     private final UsersService usersService;
+    private final MarkAddFormValidator markAddFormValidator;
 
-    public MarksController(MarksService marksService, UsersService usersService) {
+    public MarksController(
+            MarksService marksService,
+            UsersService usersService,
+            MarkAddFormValidator markAddFormValidator) {
         this.marksService = marksService;
         this.usersService = usersService;
+        this.markAddFormValidator = markAddFormValidator;
     }
 
     @GetMapping("/mark/list")
@@ -37,7 +45,18 @@ public class MarksController {
     }
 
     @PostMapping("/mark/add")
-    public String addMark(@ModelAttribute Mark mark, @RequestParam("user") Long userId) {
+    public String addMark(
+            @Validated @ModelAttribute("mark") Mark mark,
+            BindingResult result,
+            @RequestParam("user") Long userId,
+            Model model) {
+        markAddFormValidator.validate(mark, result);
+        //si hay errores pues recargar
+        if (result.hasErrors()) {
+            model.addAttribute("usersList", usersService.getUsers());
+            return "mark/add";
+        }
+        //si no ,guardar
         mark.setUser(usersService.getUser(userId));
         marksService.addMark(mark);
         return "redirect:/mark/list";

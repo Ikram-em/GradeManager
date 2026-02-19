@@ -35,6 +35,11 @@ public class DepartmentsService {
                 .orElse(null);
     }
 
+    public boolean existsByCode(String code) {
+        return departmentsList.stream()
+                .anyMatch(d -> d.getCode() != null && d.getCode().equalsIgnoreCase(code));
+    }
+
     public void addDepartment(Department department) {
 
         if (department.getId() == null) {

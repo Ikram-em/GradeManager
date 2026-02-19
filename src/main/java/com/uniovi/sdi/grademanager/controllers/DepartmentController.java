@@ -2,17 +2,26 @@ package com.uniovi.sdi.grademanager.controllers;
 
 import com.uniovi.sdi.grademanager.entities.Department;
 import com.uniovi.sdi.grademanager.services.DepartmentsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.uniovi.sdi.grademanager.validators.DepartmentAddFormValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/departments")
 public class DepartmentController {
 
-    @Autowired
-    private DepartmentsService departmentsService;
+    private final DepartmentsService departmentsService;
+    private final DepartmentAddFormValidator departmentAddFormValidator;
+
+    public DepartmentController(
+            DepartmentsService departmentsService,
+            DepartmentAddFormValidator departmentAddFormValidator) {
+        this.departmentsService = departmentsService;
+        this.departmentAddFormValidator = departmentAddFormValidator;
+    }
 
     // LISTAR
     @GetMapping
@@ -35,13 +44,18 @@ public class DepartmentController {
 
     // FORMULARIO AÑADIR
     @GetMapping("/add")
-    public String addForm() {
+    public String addForm(Model model) {
+        model.addAttribute("department", new Department());
         return "departments/add";
     }
 
-    // AÑADIR (POST)
+    // este valida en servidor y si falla vuelve al add departments
     @PostMapping("/add")
-    public String addPost(@ModelAttribute Department department) {
+    public String addPost(@Validated @ModelAttribute("department") Department department, BindingResult result) {
+        departmentAddFormValidator.validate(department, result);
+        if (result.hasErrors()) {
+            return "departments/add";
+        }
         departmentsService.addDepartment(department);
         return "redirect:/departments";
     }
