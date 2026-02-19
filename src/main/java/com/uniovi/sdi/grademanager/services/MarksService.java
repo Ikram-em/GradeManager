@@ -3,6 +3,8 @@ package com.uniovi.sdi.grademanager.services;
 import com.uniovi.sdi.grademanager.entities.Mark;
 import com.uniovi.sdi.grademanager.repositories.MarksRepository;
 import com.uniovi.sdi.grademanager.repositories.UsersRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,5 +44,17 @@ public class MarksService {
 
     public List<Mark> getMarksByUserDni(String dni) {
         return marksRepository.findAllByUserDni(dni);
+    }
+
+    public void setMarkResend(boolean revised, Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String dni = auth != null ? auth.getName() : null;
+        Mark mark = marksRepository.findById(id).orElse(null);
+        if (dni == null || mark == null || mark.getUser() == null || mark.getUser().getDni() == null) {
+            return;
+        }
+        if (mark.getUser().getDni().equals(dni)) {
+            marksRepository.updateResend(revised, id);
+        }
     }
 }

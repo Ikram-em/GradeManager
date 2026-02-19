@@ -1,7 +1,8 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
     <title>Notaneitor</title>
@@ -24,20 +25,7 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <img src="/images/student-48.png" alt="logo" class="mr-2"/>
-
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/mark/list">Ver Notas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/mark/add">Agregar Nota</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<nav th:replace="fragments/nav :: nav"></nav>
 
 <div class="container mt-4" id="main-container">
     <h2>Notas</h2>
@@ -62,8 +50,30 @@
                     <td th:text="${mark.description}">Ejercicio 1</td>
                     <td th:text="${mark.score}">10</td>
                     <td><a th:href="@{/mark/details/{id}(id=${mark.id})}">detalles</a></td>
-                    <td><a th:href="@{/mark/edit/{id}(id=${mark.id})}">modificar</a></td>
-                    <td><a th:href="@{/mark/delete/{id}(id=${mark.id})}">eliminar</a></td>
+                    <td>
+                        <a sec:authorize="hasRole('PROFESSOR')"
+                           th:href="@{/mark/edit/{id}(id=${mark.id})}">modificar</a>
+                        <div sec:authorize="hasRole('STUDENT')">
+                            <div th:if="${mark.resend}">
+                                <button type="button"
+                                        class="btn btn-sm btn-warning mt-1 js-noresend"
+                                        th:attr="data-mark-id=${mark.id}"
+                                        th:disabled="${mark.user == null or mark.user.dni != #authentication.name}">
+                                    No reenviar
+                                </button>
+                            </div>
+                            <div th:unless="${mark.resend}">
+                                <button type="button"
+                                        class="btn btn-sm btn-info mt-1 js-resend"
+                                        th:attr="data-mark-id=${mark.id}"
+                                        th:disabled="${mark.user == null or mark.user.dni != #authentication.name}">
+                                    Reenviar
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td><a sec:authorize="hasRole('PROFESSOR')"
+                           th:href="@{/mark/delete/{id}(id=${mark.id})}">eliminar</a></td>
                 </tr>
                 </tbody>
             </table>
@@ -79,6 +89,20 @@
 <script>
     $("#updateButton").click(function () {
         $("#marksTableContainer").load("/mark/list/update #marksTable");
+    });
+
+    $(document).on("click", ".js-resend", function () {
+        var markId = $(this).data("mark-id");
+        $.get("/mark/" + markId + "/resend", function () {
+            $("#marksTableContainer").load("/mark/list/update #marksTable");
+        });
+    });
+
+    $(document).on("click", ".js-noresend", function () {
+        var markId = $(this).data("mark-id");
+        $.get("/mark/" + markId + "/noresend", function () {
+            $("#marksTableContainer").load("/mark/list/update #marksTable");
+        });
     });
 </script>
 

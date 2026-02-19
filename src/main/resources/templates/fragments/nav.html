@@ -1,7 +1,8 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <body>
 
@@ -17,22 +18,23 @@
 
     <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/}" th:text="#{nav.home}">Home</a>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/home}" th:text="#{nav.home}">Home</a>
             </li>
 
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                 <a class="nav-link dropdown-toggle" href="#" id="marksDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false" th:text="#{nav.marks}">
                     Gestion de notas
                 </a>
                 <div class="dropdown-menu" aria-labelledby="marksDropdown">
                     <a class="dropdown-item" th:href="@{/mark/list}" th:text="#{nav.marks.list}">Ver notas</a>
-                    <a class="dropdown-item" th:href="@{/mark/add}" th:text="#{nav.marks.add}">Agregar nota</a>
+                    <a class="dropdown-item" th:href="@{/mark/add}" th:text="#{nav.marks.add}"
+                       sec:authorize="hasRole('PROFESSOR')">Agregar nota</a>
                 </div>
             </li>
 
-            <li id="users-menu" class="nav-item dropdown">
+            <li id="users-menu" class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropDown" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Gestion de usuarios
@@ -65,16 +67,22 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
                 <a class="nav-link" th:href="@{/signup}">
                     <i class='fas fa-user-alt' style='font-size:16px'></i>
                     <span th:text="#{signup.message}">Registrate</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
                 <a class="nav-link" th:href="@{/login}">
                     <i class='fas fa-sign-in-alt' style='font-size:16px'></i>
                     <span th:text="#{login.message}">Identificate</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/logout}">
+                    <i class='fas fa-sign-out-alt' style='font-size:16px'></i>
+                    <span>Desconectar</span>
                 </a>
             </li>
         </ul>

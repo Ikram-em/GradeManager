@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head th:replace="fragments/head :: head"></head>
 
@@ -33,8 +34,8 @@
                 <td th:text="${mark.description}">Ejercicio 1</td>
                 <td th:text="${mark.score}">10</td>
                 <td><a th:href="${'/mark/details/' + mark.id}">detalles</a></td>
-                <td><a th:href="${'/mark/edit/' + mark.id}">modificar</a></td>
-                <td><a th:href="${'/mark/delete/' + mark.id}">eliminar</a></td>
+                <td><a sec:authorize="hasRole('PROFESSOR')" th:href="${'/mark/edit/' + mark.id}">modificar</a></td>
+                <td><a sec:authorize="hasRole('PROFESSOR')" th:href="${'/mark/delete/' + mark.id}">eliminar</a></td>
             </tr>
             </tbody>
         </table>

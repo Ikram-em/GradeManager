@@ -21,17 +21,26 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/css/**", "/images/**", "/script/**", "/webjars/**").permitAll()
                         .requestMatchers("/signup", "/login/**").permitAll()
+                        .requestMatchers("/mark/add").hasAuthority("ROLE_PROFESSOR")
+                        .requestMatchers("/mark/edit/*").hasAuthority("ROLE_PROFESSOR")
+                        .requestMatchers("/mark/delete/*").hasAuthority("ROLE_PROFESSOR")
+                        .requestMatchers("/mark/*/resend").hasAuthority("ROLE_STUDENT")
+                        .requestMatchers("/mark/*/noresend").hasAuthority("ROLE_STUDENT")
+                        .requestMatchers("/mark/**").hasAnyAuthority("ROLE_STUDENT", "ROLE_PROFESSOR", "ROLE_ADMIN")
+                        .requestMatchers("/user/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/home", true)
                         .permitAll())
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/home")
-                        .permitAll());
+                        .logoutSuccessUrl("/login")
+                        .permitAll())
+                .securityContext(securityContext -> securityContext
+                        .requireExplicitSave(true));
 
         return http.build();
     }
