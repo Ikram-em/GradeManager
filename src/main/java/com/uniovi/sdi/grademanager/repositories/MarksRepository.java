@@ -1,6 +1,7 @@
 package com.uniovi.sdi.grademanager.repositories;
 
 import com.uniovi.sdi.grademanager.entities.Mark;
+import com.uniovi.sdi.grademanager.entities.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -10,6 +11,9 @@ import java.util.List;
 
 public interface MarksRepository extends CrudRepository<Mark, Long> {
     List<Mark> findAllByUserDni(String dni);
+
+    @Query("SELECT r FROM Mark r WHERE r.user = ?1 ORDER BY r.id ASC")
+    List<Mark> findAllByUser(User user);
 
     @Modifying
     @Transactional

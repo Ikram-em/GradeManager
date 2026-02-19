@@ -1,6 +1,7 @@
 package com.uniovi.sdi.grademanager.services;
 
 import com.uniovi.sdi.grademanager.entities.Mark;
+import com.uniovi.sdi.grademanager.entities.User;
 import com.uniovi.sdi.grademanager.repositories.MarksRepository;
 import com.uniovi.sdi.grademanager.repositories.UsersRepository;
 import org.springframework.security.core.Authentication;
@@ -44,6 +45,19 @@ public class MarksService {
 
     public List<Mark> getMarksByUserDni(String dni) {
         return marksRepository.findAllByUserDni(dni);
+    }
+
+    public List<Mark> getMarksForUser(User user) {
+        if (user == null || user.getRole() == null) {
+            return new ArrayList<>();
+        }
+        if (user.getRole().equals("ROLE_STUDENT")) {
+            return marksRepository.findAllByUser(user);
+        }
+        if (user.getRole().equals("ROLE_PROFESSOR") || user.getRole().equals("ROLE_ADMIN")) {
+            return getMarks();
+        }
+        return new ArrayList<>();
     }
 
     public void setMarkResend(boolean revised, Long id) {
