@@ -1,7 +1,8 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
     <title>Departamentos</title>
@@ -28,7 +29,7 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/departments">Ver Departamentos</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                 <a class="nav-link" href="/departments/add">Agregar Departamento</a>
             </li>
         </ul>
@@ -60,18 +61,18 @@
                 <td th:text="${department.faculty}">EII</td>
                 <td th:text="${department.professors}">120</td>
 
-                <td>
+                <td sec:authorize="hasAnyRole('PROFESSOR','ADMIN')">
                     <a th:href="@{/departments/details/{id}(id=${department.id})}">
                         detalles
                     </a>
 
                 </td>
-                <td>
+                <td sec:authorize="hasRole('ADMIN')">
                     <a th:href="@{/departments/edit/{id}(id=${department.id})}">
                         modificar
                     </a>
                 </td>
-                <td>
+                <td sec:authorize="hasRole('ADMIN')">
                     <a th:href="@{/departments/delete/{id}(id=${department.id})}">
                         eliminar
                     </a>

@@ -31,6 +31,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/mark/*/noresend").hasAuthority("ROLE_STUDENT")
                         .requestMatchers("/mark/**").hasAnyAuthority("ROLE_STUDENT", "ROLE_PROFESSOR", "ROLE_ADMIN")
                         .requestMatchers("/user/**").hasRole("ADMIN")
+                        .requestMatchers("/departments/add", "/departments/edit/*", "/departments/delete/*").hasRole("ADMIN")
+                        .requestMatchers("/departments/details/*").hasAnyAuthority("ROLE_PROFESSOR", "ROLE_ADMIN")
+                        .requestMatchers("/departments", "/departments/").authenticated()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

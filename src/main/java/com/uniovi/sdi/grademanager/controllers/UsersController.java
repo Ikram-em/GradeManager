@@ -1,11 +1,14 @@
 package com.uniovi.sdi.grademanager.controllers;
 
 import com.uniovi.sdi.grademanager.entities.User;
+import com.uniovi.sdi.grademanager.services.MarksService;
 import com.uniovi.sdi.grademanager.services.RolesService;
 import com.uniovi.sdi.grademanager.services.SecurityService;
 import com.uniovi.sdi.grademanager.services.UsersService;
 import com.uniovi.sdi.grademanager.validators.UserEditFormValidator;
 import com.uniovi.sdi.grademanager.validators.SignUpFormValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Collections;
+import com.uniovi.sdi.grademanager.entities.Mark;
 
 @Controller
 public class UsersController {
@@ -25,6 +29,7 @@ public class UsersController {
     private final UsersService usersService;
     private final SecurityService securityService;
     private final RolesService rolesService;
+    private final MarksService marksService;
     private final SignUpFormValidator signUpFormValidator;
     private final UserEditFormValidator userEditFormValidator;
 
@@ -33,12 +38,14 @@ public class UsersController {
             SecurityService securityService,
             SignUpFormValidator signUpFormValidator,
             UserEditFormValidator userEditFormValidator,
-            RolesService rolesService) {
+            RolesService rolesService,
+            MarksService marksService) {
         this.usersService = usersService;
         this.securityService = securityService;
         this.signUpFormValidator = signUpFormValidator;
         this.userEditFormValidator = userEditFormValidator;
         this.rolesService = rolesService;
+        this.marksService = marksService;
     }
 
     @GetMapping("/user/list")
@@ -91,22 +98,28 @@ public class UsersController {
     }
 
     @GetMapping("/home")
-    public String home(Model model) {
+    public String home(Model model, Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String dni = auth != null ? auth.getName() : null;
         if (dni == null || "anonymousUser".equals(dni)) {
             model.addAttribute("markList", Collections.emptyList());
             model.addAttribute("marksList", Collections.emptyList());
+            model.addAttribute("page", Page.empty(pageable));
         } else {
             User activeUser = usersService.getUserByDni(dni);
-            if (activeUser == null || activeUser.getMarks() == null) {
+            if (activeUser == null) {
                 model.addAttribute("markList", Collections.emptyList());
                 model.addAttribute("marksList", Collections.emptyList());
+                model.addAttribute("page", Page.empty(pageable));
             } else {
-                model.addAttribute("markList", activeUser.getMarks());
-                model.addAttribute("marksList", activeUser.getMarks());
+                Page<Mark> marksPage = marksService.getMarksForUser(pageable, activeUser);
+                model.addAttribute("markList", marksPage.getContent());
+                model.addAttribute("marksList", marksPage.getContent());
+                model.addAttribute("page", marksPage);
             }
         }
+        model.addAttribute("showResendControls", false);
+        model.addAttribute("showPagination", false);
         return "home";
     }
 

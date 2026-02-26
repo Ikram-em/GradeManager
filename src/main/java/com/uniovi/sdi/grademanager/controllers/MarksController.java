@@ -48,6 +48,8 @@ public class MarksController {
         model.addAttribute("marksList", marks.getContent());
         model.addAttribute("page", marks);
         model.addAttribute("searchText", searchText);
+        model.addAttribute("showResendControls", true);
+        model.addAttribute("showPagination", true);
         return "mark/list";
     }
 
@@ -66,7 +68,9 @@ public class MarksController {
             marks = marksService.getMarksForUser(pageable, user);
         }
         model.addAttribute("marksList", marks.getContent());
-        return "mark/list :: marksTable";
+        model.addAttribute("showResendControls", true);
+        model.addAttribute("showPagination", true);
+        return "fragments/marksTable :: marksTable";
     }
 
     @GetMapping("/mark/details/{id}")
