@@ -2,9 +2,11 @@ package com.uniovi.sdi.grademanager;
 
 import com.uniovi.sdi.grademanager.pageobjects.PO_HomeView;
 import com.uniovi.sdi.grademanager.pageobjects.PO_LoginView;
+import com.uniovi.sdi.grademanager.pageobjects.PO_PrivateView;
 import com.uniovi.sdi.grademanager.pageobjects.PO_Properties;
 import com.uniovi.sdi.grademanager.pageobjects.PO_SignUpView;
 import com.uniovi.sdi.grademanager.pageobjects.PO_View;
+import com.uniovi.sdi.grademanager.util.SeleniumUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -191,5 +194,75 @@ class GradeManagerApplicationTests {
         PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
         PO_LoginView.fillLoginForm(driver, "99999990A", "123456");
         PO_HomeView.clickOption(driver, "logout", "class", "btn btn-primary");
+    }
+
+    @Test
+    @Order(14)
+    public void PR12() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999990A", "123456");
+        String checkText = "Notas del usuario";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        List<WebElement> marksList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr", PO_View.getTimeout());
+        Assertions.assertEquals(4, marksList.size());
+        String loginText = PO_HomeView.getP().getString("signup.message", PO_Properties.getSPANISH());
+        PO_PrivateView.clickOption(driver, "logout", "text", loginText);
+    }
+
+    @Test
+    @Order(15)
+    public void PR13() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999990A", "123456");
+        String checkText = "Notas del usuario";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        By enlace = By.xpath("//td[contains(text(), 'Nota A2')]/following-sibling::*[2]");
+        driver.findElement(enlace).click();
+        checkText = "Detalles de la nota";
+        result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, result.getFirst().getText());
+        String loginText = PO_HomeView.getP().getString("signup.message", PO_Properties.getSPANISH());
+        PO_PrivateView.clickOption(driver, "logout", "text", loginText);
+    }
+
+    @Test
+    @Order(16)
+    public void PR14() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999993D", "123456");
+        PO_View.checkElementBy(driver, "text", "99999993D");
+        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "//*[@id='myNavbar']/ul[1]/li[2]");
+        elements.getFirst().click();
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'mark/add')]");
+        elements.getFirst().click();
+        String checkText = "Nota sistemas distribuidos";
+        PO_PrivateView.fillFormAddMark(driver, 3, checkText, "8");
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@class, 'page-link')]");
+        elements.getLast().click();
+        elements = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, elements.getFirst().getText());
+        String loginText = PO_HomeView.getP().getString("signup.message", PO_Properties.getSPANISH());
+        PO_PrivateView.clickOption(driver, "logout", "text", loginText);
+    }
+
+    @Test
+    @Order(17)
+    public void PR15() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999993D", "123456");
+        PO_View.checkElementBy(driver, "text", "99999993D");
+        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "//*[@id='myNavbar']/ul[1]/li[2]");
+        elements.getFirst().click();
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'mark/list')]");
+        elements.getFirst().click();
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@class, 'page-link')]");
+        elements.getLast().click();
+        elements = PO_View.checkElementBy(driver, "free", "//td[contains(text(), 'Nota sistemas distribuidos')]/following-sibling::*/a[contains(@href, 'mark/delete')]");
+        elements.getFirst().click();
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@class, 'page-link')]");
+        elements.getLast().click();
+        SeleniumUtils.waitTextIsNotPresentOnPage(driver, "Nota sistemas distribuidos", PO_View.getTimeout());
+        String loginText = PO_HomeView.getP().getString("signup.message", PO_Properties.getSPANISH());
+        PO_PrivateView.clickOption(driver, "logout", "text", loginText);
     }
 }
