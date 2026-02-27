@@ -1,8 +1,10 @@
 package com.uniovi.sdi.grademanager;
 
 import com.uniovi.sdi.grademanager.pageobjects.PO_HomeView;
+import com.uniovi.sdi.grademanager.pageobjects.PO_LoginView;
 import com.uniovi.sdi.grademanager.pageobjects.PO_Properties;
 import com.uniovi.sdi.grademanager.pageobjects.PO_SignUpView;
+import com.uniovi.sdi.grademanager.pageobjects.PO_View;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -143,5 +145,51 @@ class GradeManagerApplicationTests {
         List<WebElement> result = PO_SignUpView.checkElementByKey(driver, "Error.signup.name.length", PO_Properties.getSPANISH());
         String checkText = PO_HomeView.getP().getString("Error.signup.name.length", PO_Properties.getSPANISH());
         Assertions.assertEquals(checkText, result.getFirst().getText());
+    }
+
+    @Test
+    @Order(9)
+    public void PR07() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999990A", "123456");
+        String checkText = "Notas del usuario";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, result.getFirst().getText());
+    }
+
+    @Test
+    @Order(10)
+    public void PR08() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999993D", "123456");
+        String checkText = "Notas del usuario";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, result.getFirst().getText());
+    }
+
+    @Test
+    @Order(11)
+    public void PR09() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999988F", "123456");
+        String checkText = "Notas del usuario";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, result.getFirst().getText());
+    }
+
+    @Test
+    @Order(12)
+    public void PR10() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999990A", "12345");
+        PO_View.checkElementBy(driver, "text", "Identificate");
+    }
+
+    @Test
+    @Order(13)
+    public void PR11() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999990A", "123456");
+        PO_HomeView.clickOption(driver, "logout", "class", "btn btn-primary");
     }
 }
