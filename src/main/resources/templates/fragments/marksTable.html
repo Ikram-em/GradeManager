@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<body>
+
+<div th:fragment="marksTable" class="table-responsive">
+    <table class="table table-hover" id="marksTable">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Descripción</th>
+            <th>Puntuación</th>
+            <th>Detalles</th>
+            <th sec:authorize="hasRole('PROFESSOR')">Modificar</th>
+            <th sec:authorize="hasRole('PROFESSOR')">Eliminar</th>
+            <th th:if="${showResendControls != null and showResendControls}" sec:authorize="hasRole('STUDENT')">Reenvío</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="mark : ${marksList}">
+            <td th:text="${mark.id}">1</td>
+            <td th:text="${mark.description}">Ejercicio 1</td>
+            <td th:text="${mark.score}">10</td>
+            <td><a th:href="@{/mark/details/{id}(id=${mark.id})}">detalles</a></td>
+            <td sec:authorize="hasRole('PROFESSOR')">
+                <a th:href="@{/mark/edit/{id}(id=${mark.id})}">modificar</a>
+            </td>
+            <td sec:authorize="hasRole('PROFESSOR')">
+                <a th:href="@{/mark/delete/{id}(id=${mark.id})}">eliminar</a>
+            </td>
+            <td th:if="${showResendControls != null and showResendControls}" sec:authorize="hasRole('STUDENT')">
+                <div th:if="${mark.resend}">
+                    <button type="button"
+                            class="btn btn-sm btn-warning mt-1 js-noresend"
+                            th:attr="data-mark-id=${mark.id}"
+                            th:disabled="${mark.user == null or mark.user.dni != #authentication.name}">
+                        No reenviar
+                    </button>
+                </div>
+                <div th:unless="${mark.resend}">
+                    <button type="button"
+                            class="btn btn-sm btn-info mt-1 js-resend"
+                            th:attr="data-mark-id=${mark.id}"
+                            th:disabled="${mark.user == null or mark.user.dni != #authentication.name}">
+                        Reenviar
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(marksList)}" class="alert alert-warning">
+        No marks
+    </div>
+
+    <footer th:if="${showPagination != null and showPagination}"
+            th:replace="~{fragments/pagination :: pagination}"></footer>
+</div>
+
+</body>
+</html>

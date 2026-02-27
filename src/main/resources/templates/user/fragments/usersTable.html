@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="table-responsive" th:fragment="usersTable" id="usersTable">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">DNI</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellidos</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="user : ${usersList}">
+            <td th:text="${user.dni}">71888888X</td>
+            <td th:text="${user.name}">Nombre del alumno</td>
+            <td th:text="${user.lastName}">Apellidos del alumno</td>
+            <td><a th:href="@{/user/details/{id}(id=${user.id})}">detalles</a></td>
+            <td><a th:href="@{/user/edit/{id}(id=${user.id})}">modificar</a></td>
+            <td><a th:href="@{/user/delete/{id}(id=${user.id})}">eliminar</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
