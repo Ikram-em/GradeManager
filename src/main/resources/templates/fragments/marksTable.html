@@ -12,7 +12,7 @@
             <th>ID</th>
             <th>Descripción</th>
             <th>Puntuación</th>
-            <th>Detalles</th>
+            <th sec:authorize="hasAnyRole('PROFESSOR','ADMIN')">Detalles</th>
             <th sec:authorize="hasRole('PROFESSOR')">Modificar</th>
             <th sec:authorize="hasRole('PROFESSOR')">Eliminar</th>
             <th th:if="${showResendControls != null and showResendControls}" sec:authorize="hasRole('STUDENT')">Reenvío</th>
@@ -24,7 +24,9 @@
             <td th:text="${mark.id}">1</td>
             <td th:text="${mark.description}">Ejercicio 1</td>
             <td th:text="${mark.score}">10</td>
-            <td><a th:href="@{/mark/details/{id}(id=${mark.id})}">detalles</a></td>
+            <td sec:authorize="hasAnyRole('PROFESSOR','ADMIN')">
+                <a th:href="@{/mark/details/{id}(id=${mark.id})}">detalles</a>
+            </td>
             <td sec:authorize="hasRole('PROFESSOR')">
                 <a th:href="@{/mark/edit/{id}(id=${mark.id})}">modificar</a>
             </td>

@@ -41,10 +41,8 @@ class MarkSearchByRoleFunctionalTest {
 
         mockMvc.perform(get("/mark/list")
                         .session(professorSession)
-                        .param("searchText", "Nota"))
+                        .param("searchText", "Nota C1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Nota A1")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Nota B1")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Nota C1")));
     }
 

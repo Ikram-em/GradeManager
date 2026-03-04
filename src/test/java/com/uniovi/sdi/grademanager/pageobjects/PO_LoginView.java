@@ -17,7 +17,7 @@ public class PO_LoginView extends PO_NavView {
         password.clear();
         password.sendKeys(passwordp);
 
-        By boton = By.className("btn");
+        By boton = By.cssSelector("form button[type='submit']");
         driver.findElement(boton).click();
     }
 }

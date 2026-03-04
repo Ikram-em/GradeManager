@@ -7,6 +7,8 @@ import com.uniovi.sdi.grademanager.services.SecurityService;
 import com.uniovi.sdi.grademanager.services.UsersService;
 import com.uniovi.sdi.grademanager.validators.UserEditFormValidator;
 import com.uniovi.sdi.grademanager.validators.SignUpFormValidator;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -81,15 +83,20 @@ public class UsersController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Validated @ModelAttribute("user") User user, BindingResult result) {
+    public String signup(@Validated @ModelAttribute("user") User user, BindingResult result, HttpServletRequest request) {
         signUpFormValidator.validate(user, result);
         if (result.hasErrors()) {
             return "signup";
         }
         user.setRole(rolesService.getRoles()[0]);
         usersService.addUser(user);
-        securityService.autoLogin(user.getDni(), user.getPasswordConfirm());
-        return "redirect:home";
+        try {
+            request.login(user.getDni(), user.getPasswordConfirm());
+        } catch (ServletException e) {
+            // Fallback for test/runtime environments where container login is not available
+            securityService.autoLogin(user.getDni(), user.getPasswordConfirm());
+        }
+        return "redirect:/home";
     }
 
     @GetMapping("/login")

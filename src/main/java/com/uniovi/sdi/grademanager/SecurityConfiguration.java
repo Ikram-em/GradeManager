@@ -25,6 +25,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/", "/css/**", "/images/**", "/script/**", "/webjars/**").permitAll()
                         .requestMatchers("/signup", "/login/**").permitAll()
                         .requestMatchers("/mark/add").hasAuthority("ROLE_PROFESSOR")
+                        .requestMatchers("/mark/details/*").hasAnyAuthority("ROLE_PROFESSOR", "ROLE_ADMIN")
                         .requestMatchers("/mark/edit/*").hasAuthority("ROLE_PROFESSOR")
                         .requestMatchers("/mark/delete/*").hasAuthority("ROLE_PROFESSOR")
                         .requestMatchers("/mark/*/resend").hasAuthority("ROLE_STUDENT")
@@ -41,9 +42,7 @@ public class SecurityConfiguration {
                         .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login")
-                        .permitAll())
-                .securityContext(securityContext -> securityContext
-                        .requireExplicitSave(true));
+                        .permitAll());
 
         return http.build();
     }

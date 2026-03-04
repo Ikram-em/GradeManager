@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.UUID;
 import java.util.stream.StreamSupport;
@@ -33,9 +34,9 @@ class UserManagementFunctionalTest {
     private UsersRepository usersRepository;
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void shouldListUsers() throws Exception {
-        mockMvc.perform(get("/user/list"))
+        MockHttpSession adminSession = login("99999988F", "123456");
+        mockMvc.perform(get("/user/list").session(adminSession))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/list"))
                 .andExpect(model().attributeExists("usersList"))
@@ -43,13 +44,14 @@ class UserManagementFunctionalTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void shouldAddAndDeleteUser() throws Exception {
+        MockHttpSession adminSession = login("99999988F", "123456");
         long before = usersRepository.count();
         String uniqueSuffix = UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
         String dni = "88" + uniqueSuffix + "A";
 
         mockMvc.perform(post("/user/add")
+                        .session(adminSession)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("dni", dni)
                         .param("name", "Usuario")
@@ -64,7 +66,7 @@ class UserManagementFunctionalTest {
                 .findFirst()
                 .orElseThrow();
 
-        mockMvc.perform(get("/user/delete/{id}", createdUser.getId()))
+        mockMvc.perform(get("/user/delete/{id}", createdUser.getId()).session(adminSession))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/list"));
 
@@ -74,14 +76,15 @@ class UserManagementFunctionalTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void shouldEditUserWithoutChangingPassword() throws Exception {
+        MockHttpSession adminSession = login("99999988F", "123456");
         User existingUser = StreamSupport.stream(usersRepository.findAll().spliterator(), false)
                 .findFirst()
                 .orElseThrow();
         String oldPassword = existingUser.getPassword();
 
         mockMvc.perform(post("/user/edit/{id}", existingUser.getId())
+                        .session(adminSession)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("dni", existingUser.getDni())
                         .param("name", "NombreEditado")
@@ -93,5 +96,17 @@ class UserManagementFunctionalTest {
         assertThat(editedUser.getName()).isEqualTo("NombreEditado");
         assertThat(editedUser.getLastName()).isEqualTo("ApellidoEditado");
         assertThat(editedUser.getPassword()).isEqualTo(oldPassword);
+    }
+
+    private MockHttpSession login(String dni, String password) throws Exception {
+        MvcResult result = mockMvc.perform(post("/login")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("username", dni)
+                        .param("password", password))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/home"))
+                .andReturn();
+
+        return (MockHttpSession) result.getRequest().getSession(false);
     }
 }

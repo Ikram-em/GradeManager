@@ -32,7 +32,7 @@ public class PO_SignUpView extends PO_NavView {
         passwordConfirm.clear();
         passwordConfirm.sendKeys(passwordconfp);
 
-        By boton = By.className("btn");
+        By boton = By.cssSelector("form button[type='submit']");
         driver.findElement(boton).click();
     }
 }
