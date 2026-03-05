@@ -24,4 +24,15 @@ public class PO_PrivateView extends PO_NavView {
         By boton = By.className("btn");
         driver.findElement(boton).click();
     }
+
+    public static void openMarksList(WebDriver driver) {
+        driver.findElement(By.id("marksDropdown")).click();
+        driver.findElement(By.cssSelector("a[href='/mark/list']")).click();
+        SeleniumUtils.waitLoadElementsBy(driver, "id", "marksTable", getTimeout());
+    }
+
+    public static void logout(WebDriver driver, String expectedText) {
+        clickOption(driver, "logout", "text", expectedText);
+        checkElementBy(driver, "text", expectedText);
+    }
 }
